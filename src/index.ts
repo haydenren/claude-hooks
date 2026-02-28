@@ -59,14 +59,8 @@ const CONFIG_SAMPLE = {
   _comment_pwsh_quoting: 'Auto-fix: pwsh -Command "$var" -> pwsh -Command \'$var\' (prevent bash $ expansion)',
   pwsh_quoting: true,
 
-  _comment_powershell_legacy: 'Block: powershell.exe -> suggest pwsh (full path allowed for PS 5.1)',
-  powershell_legacy: true,
-
   _comment_wsl_invocation: "Block: wsl ls -> run ls directly (you're in Git Bash, not WSL)",
   wsl_invocation: true,
-
-  _comment_start_command: 'Auto-fix: start "" "file" -> python os.startfile() (avoids spawning cmd.exe)',
-  start_command: true,
 
   _comment_git_commit_attribution: 'Block: git commit with Co-Authored-By lines',
   git_commit_attribution: false,

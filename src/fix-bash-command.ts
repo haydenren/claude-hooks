@@ -45,9 +45,7 @@ const _DEFAULTS: Record<string, boolean> = {
   doubled_flags: true,
   dir_in_pwsh: true,
   pwsh_quoting: true,
-  powershell_legacy: true,
   wsl_invocation: true,
-  start_command: true,
   git_commit_attribution: false,
   git_commit_generated: false,
   git_commit_emoji: false,
@@ -334,19 +332,6 @@ function checkReservedNames(cmd: string): void {
   }
 }
 
-function checkPowershellLegacy(cmd: string): void {
-  const stripped = cmd.trimStart();
-  if (/^powershell(\.exe)?\s/i.test(stripped)) {
-    block(
-      'Use pwsh (PowerShell 7+) instead of powershell.exe. ' +
-      'powershell.exe invokes the legacy Windows PowerShell 5.1.\n' +
-      'If you specifically need PowerShell 5.1 for legacy compatibility, ' +
-      'use the full path: ' +
-      'C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe',
-    );
-  }
-}
-
 function checkDirInPwsh(cmd: string): void {
   if (!/\bpwsh(?:\.exe)?\s+(?:-Command|-c)\b/i.test(cmd)) return;
   const dm = /\bdir\s+(\/[a-zA-Z])/i.exec(cmd);
@@ -450,23 +435,6 @@ function fixPwshQuoting(cmd: string): [string, string | null] {
   return [fixed, null];
 }
 
-function fixStartCommand(cmd: string): string {
-  const trimmed = cmd.trim();
-  let m = trimmed.match(/^start\s+""\s+"([^"]+)"$/);
-  if (!m) {
-    // Also match without the empty title: start "path"
-    m = trimmed.match(/^start\s+"([^"]+)"$/);
-  }
-  if (!m) {
-    // Unquoted: start path (no spaces in path)
-    m = trimmed.match(/^start\s+(\S+)$/);
-  }
-  if (!m) return cmd;
-  const path = m[1].replace(/\\/g, '/');
-  const escaped = path.replace(/'/g, "\\'");
-  return `python -c "import os; os.startfile('${escaped}')"`;
-}
-
 // ---------------------------------------------------------------------------
 // Exported entry point
 // ---------------------------------------------------------------------------
@@ -483,7 +451,6 @@ export function runFixBashCommand(inputData: Record<string, unknown>): void {
   if (_isEnabled('git_commit_attribution', false)) checkGitCommitAttribution(command);
   if (_isEnabled('git_commit_generated', false)) checkGitCommitGenerated(command);
   if (_isEnabled('git_commit_emoji', false)) checkGitCommitEmoji(command);
-  if (_isEnabled('powershell_legacy')) checkPowershellLegacy(command);
   if (_isEnabled('wsl_invocation')) checkWslInvocation(command);
   if (_isEnabled('wsl_paths')) checkWslPaths(command);
   if (_isEnabled('dir_in_pwsh')) checkDirInPwsh(command);
@@ -523,12 +490,6 @@ export function runFixBashCommand(inputData: Record<string, unknown>): void {
     [command, pwshErr] = fixPwshQuoting(command);
     if (pwshErr) block(pwshErr);
     if (command !== prev) fixes.push('swapped pwsh -Command quotes from double to single');
-  }
-
-  if (_isEnabled('start_command')) {
-    const prev = command;
-    command = fixStartCommand(command);
-    if (command !== prev) fixes.push('replaced start with os.startfile()');
   }
 
   // -- Emit result --------------------------------------------------------

@@ -19,9 +19,7 @@
 | UNC 路径 | `\\server\share\...` | 拦截 | 建议使用 `//server/share/...` |
 | WSL 调用 | `wsl ls`, `wsl.exe cat` | 拦截 | 拒绝——当前环境是 Git Bash 而非 WSL；允许使用完整路径 |
 | WSL 挂载路径 | `/mnt/c/Users/...` | 拦截 | 建议使用 `C:/Users/...` |
-| 旧版 PowerShell | `powershell.exe ...` | 拦截 | 建议使用 `pwsh`；可通过完整路径使用 PS 5.1 |
 | bash 中的 `dir /b` | `dir /b path` | 自动修复 | 改写为 `ls -1 path` |
-| start 命令 | `start "" "file.png"` | 自动修复 | 改写为 `python os.startfile()` |
 | pwsh 中的 `dir /flag` | `pwsh -Command "dir /b ..."` | 拦截 | 建议使用 `Get-ChildItem` 等价命令 |
 | 文件中的 Emoji | Write/Edit 包含 emoji | 拦截 | 拒绝并提示 |
 
@@ -120,14 +118,12 @@ cp ~/.claude/hooks/config.sample.json ~/.claude/hooks/config.json
 | `python3` | 将 `python3` 改写为 `python` | 开启 | 自动修复 |
 | `dir_windows_flags` | 将 `dir /b` 改写为 `ls -1` | 开启 | 自动修复 |
 | `pwsh_quoting` | 修复 pwsh 双引号为单引号 | 开启 | 自动修复 |
-| `start_command` | 将 `start` 改写为 `python os.startfile()` | 开启 | 自动修复 |
 | `backslash_paths` | 拦截 `C:\` 反斜杠路径 | 开启 | 拦截 |
 | `unc_paths` | 拦截 `\\server` UNC 路径 | 开启 | 拦截 |
 | `wsl_paths` | 拦截 `/mnt/c/` WSL 路径 | 开启 | 拦截 |
 | `reserved_names` | 拦截重定向到 CON、PRN 等 | 开启 | 拦截 |
 | `doubled_flags` | 拦截 `//flag` 双斜杠参数 | 开启 | 拦截 |
 | `dir_in_pwsh` | 拦截 pwsh 中的 `dir /flag` | 开启 | 拦截 |
-| `powershell_legacy` | 拦截 `powershell.exe`，建议用 pwsh | 开启 | 拦截 |
 | `wsl_invocation` | 拦截直接 `wsl` 命令 | 开启 | 拦截 |
 | `git_commit_attribution` | 拦截提交中的 Co-Authored-By | 关闭 | 拦截 |
 | `git_commit_generated` | 拦截提交中的 "Generated with" | 关闭 | 拦截 |

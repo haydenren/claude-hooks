@@ -19,9 +19,7 @@ PreToolUse hooks for Claude Code on Windows. These hooks intercept Bash commands
 | UNC paths | `\\server\share\...` | Block | Suggest `//server/share/...` |
 | WSL invocation | `wsl ls`, `wsl.exe cat` | Block | Reject -- you're in Git Bash, not WSL; full path allowed |
 | WSL mount paths | `/mnt/c/Users/...` | Block | Suggest `C:/Users/...` |
-| Legacy PowerShell | `powershell.exe ...` | Block | Suggest `pwsh`; use full path to opt in to PS 5.1 |
 | `dir /b` in bash | `dir /b path` | Auto-fix | Rewrite to `ls -1 path` |
-| start command | `start "" "file.png"` | Auto-fix | Rewrite to `python os.startfile()` |
 | `dir /flag` in pwsh | `pwsh -Command "dir /b ..."` | Block | Suggest `Get-ChildItem` equivalent |
 | Emoji in files | Write/Edit with emoji | Block | Reject with message |
 
@@ -120,14 +118,12 @@ Then edit `config.json` to toggle checks. Each key is a check ID mapped to `true
 | `python3` | Rewrite `python3` to `python` | on | auto-fix |
 | `dir_windows_flags` | Rewrite `dir /b` to `ls -1` | on | auto-fix |
 | `pwsh_quoting` | Fix pwsh double-quote to single-quote | on | auto-fix |
-| `start_command` | Rewrite `start` to `python os.startfile()` | on | auto-fix |
 | `backslash_paths` | Block `C:\` backslash paths | on | block |
 | `unc_paths` | Block `\\server` UNC paths | on | block |
 | `wsl_paths` | Block `/mnt/c/` WSL-style paths | on | block |
 | `reserved_names` | Block redirects to CON, PRN, etc. | on | block |
 | `doubled_flags` | Block `//flag` doubled-slash flags | on | block |
 | `dir_in_pwsh` | Block `dir /flag` inside pwsh | on | block |
-| `powershell_legacy` | Block `powershell.exe`, suggest pwsh | on | block |
 | `wsl_invocation` | Block bare `wsl` commands | on | block |
 | `git_commit_attribution` | Block Co-Authored-By in commits | off | block |
 | `git_commit_generated` | Block "Generated with" in commits | off | block |
