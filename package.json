@@ -1,0 +1,27 @@
+{
+  "name": "claude-hooks-win",
+  "version": "0.0.0",
+  "description": "PreToolUse hooks for Claude Code on Windows — auto-fixes Git Bash/MSYS2 mistakes",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://github.com/rweijnen/claude-hooks#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/rweijnen/claude-hooks.git" },
+  "files": ["dist"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": { "claude-hooks-win": "dist/index.js" },
+  "exports": { ".": "./dist/index.js", "./package.json": "./package.json" },
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit",
+    "release": "bumpp && npm publish"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "bumpp": "^10.1.0",
+    "tsdown": "^0.11.9",
+    "typescript": "^5.8.3"
+  }
+}

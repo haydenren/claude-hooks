@@ -1,5 +1,7 @@
 # claude-hooks
 
+English | [中文](README-CN.md)
+
 PreToolUse hooks for Claude Code on Windows. These hooks intercept Bash commands and file writes before execution, automatically fixing common Git Bash/MSYS2 mistakes and enforcing code style preferences. No more `> nul` creating undeletable files, no more `python3` hitting the Windows Store alias, no more `dir /b` silently treating a flag as a path, no more emoji in code.
 
 ## Fixes
@@ -25,29 +27,33 @@ PreToolUse hooks for Claude Code on Windows. These hooks intercept Bash commands
 
 ## Installation
 
-### Global (all projects)
+### Quick install (recommended)
 
 ```
-git clone https://github.com/rweijnen/claude-hooks.git
-cd claude-hooks
-python install.py
+npm install -g claude-hooks-win
+claude-hooks-win init
 ```
 
-Copies hook scripts to `~/.claude/hooks/` and adds configuration to `~/.claude/settings.json`.
+Or without global install:
+
+```
+npx -y claude-hooks-win init
+```
+
+This copies `config.sample.json` to `~/.claude/hooks/` and adds hook configuration to `~/.claude/settings.json`.
 
 ### Project-local (single project, good for testing)
 
 ```
-python install.py --project /path/to/your/project
-python install.py --project .
+npx -y claude-hooks-win init --project /path/to/your/project
+npx -y claude-hooks-win init --project .
 ```
 
-This installs hooks to `<project>/.claude/hooks/` and writes configuration to
-`<project>/.claude/settings.local.json`. Only affects that one project.
+This writes configuration to `<project>/.claude/settings.local.json`. Only affects that one project.
 
-### Manual installation
+### Manual configuration
 
-Copy `hooks/*.py` to `~/.claude/hooks/` and add to `~/.claude/settings.json`:
+Add to `~/.claude/settings.json`:
 
 ```json
 {
@@ -55,11 +61,11 @@ Copy `hooks/*.py` to `~/.claude/hooks/` and add to `~/.claude/settings.json`:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [{"type": "command", "command": "python \"$HOME/.claude/hooks/fix_bash_command.py\""}]
+        "hooks": [{"type": "command", "command": "npx -y claude-hooks-win"}]
       },
       {
         "matcher": "Write|Edit",
-        "hooks": [{"type": "command", "command": "python \"$HOME/.claude/hooks/check_file_content.py\""}]
+        "hooks": [{"type": "command", "command": "npx -y claude-hooks-win"}]
       }
     ]
   }
@@ -68,10 +74,7 @@ Copy `hooks/*.py` to `~/.claude/hooks/` and add to `~/.claude/settings.json`:
 
 ## Reviewing the fixups log
 
-Both auto-fixes and tier-2 suggestions are logged. The log lives next to the hook script, so each install gets its own:
-
-- **Global install**: `~/.claude/hooks/fixups.log`
-- **Project install**: `<project>/.claude/hooks/fixups.log`
+Both auto-fixes and tier-2 suggestions are logged to `~/.claude/hooks/fixups.log`.
 
 ```
 cat ~/.claude/hooks/fixups.log
@@ -92,12 +95,8 @@ The log auto-trims to 250 lines when it exceeds 500, so it won't grow unbounded.
 
 ## Updating
 
-Pull the latest changes and re-run the installer:
-
 ```
-cd claude-hooks
-git pull
-python install.py
+npm update -g claude-hooks-win
 ```
 
 ## Configuration
@@ -138,16 +137,6 @@ Then edit `config.json` to toggle checks. Each key is a check ID mapped to `true
 Safety checks (default on) prevent real mistakes that break commands or create undeletable files. Style checks (default off) enforce preferences -- enable the ones you want.
 
 See `config.sample.json` for descriptions of each check.
-
-## Customization
-
-The hooks are plain Python scripts in `~/.claude/hooks/`. Edit them to:
-
-- Add new auto-fix patterns (add a function, call it in `main()`)
-- Promote a tier-2 suggestion to auto-fix (move the check from blocking to rewriting)
-- Extend `_DIR_FLAG_MAP` in `fix_bash_command.py` to recognise additional `dir` flags
-- Adjust unicode blocking ranges in `check_file_content.py`
-- Add exceptions for specific commands or patterns
 
 ## How it works
 
