@@ -15,11 +15,11 @@ const SETTINGS_TEMPLATE = {
     PreToolUse: [
       {
         matcher: 'Bash',
-        hooks: [{ type: 'command', command: 'npx -y claude-hooks-win' }],
+        hooks: [{ type: 'command', command: 'claude-hooks-win' }],
       },
       {
         matcher: 'Write|Edit',
-        hooks: [{ type: 'command', command: 'npx -y claude-hooks-win' }],
+        hooks: [{ type: 'command', command: 'claude-hooks-win' }],
       },
     ],
   },
@@ -133,7 +133,29 @@ function runInit(args: string[]): void {
     }
   }
 
-  settings.hooks = SETTINGS_TEMPLATE.hooks;
+  // Merge PreToolUse: append if not present, skip if already exists
+  if (!settings.hooks || typeof settings.hooks !== 'object') {
+    settings.hooks = {};
+  }
+  const hooks = settings.hooks as Record<string, unknown>;
+  if (!Array.isArray(hooks.PreToolUse)) {
+    hooks.PreToolUse = [];
+  }
+  const existing = hooks.PreToolUse as Array<Record<string, unknown>>;
+
+  for (const entry of SETTINGS_TEMPLATE.hooks.PreToolUse) {
+    const alreadyExists = existing.some((e) => {
+      if (e.matcher !== entry.matcher) return false;
+      const hks = Array.isArray(e.hooks) ? e.hooks : [];
+      return hks.some(
+        (h: Record<string, unknown>) =>
+          typeof h.command === 'string' && h.command.includes('claude-hooks-win'),
+      );
+    });
+    if (!alreadyExists) {
+      existing.push(entry);
+    }
+  }
 
   mkdirSync(baseDir, { recursive: true });
   writeFileSync(settingsFile, JSON.stringify(settings, null, 2) + '\n', 'utf-8');

@@ -59,11 +59,11 @@ Add to `~/.claude/settings.json`:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [{"type": "command", "command": "npx -y claude-hooks-win"}]
+        "hooks": [{"type": "command", "command": "claude-hooks-win"}]
       },
       {
         "matcher": "Write|Edit",
-        "hooks": [{"type": "command", "command": "npx -y claude-hooks-win"}]
+        "hooks": [{"type": "command", "command": "claude-hooks-win"}]
       }
     ]
   }
