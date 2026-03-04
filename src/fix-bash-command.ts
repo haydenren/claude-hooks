@@ -40,7 +40,7 @@ const _DEFAULTS: Record<string, boolean> = {
   unc_paths: true,
   wsl_paths: true,
   reserved_names: true,
-  python3: true,
+  python3: false,  // DISABLED: 已创建 python3.exe 符号链接
   dir_windows_flags: true,
   doubled_flags: true,
   dir_in_pwsh: true,

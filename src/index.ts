@@ -49,8 +49,8 @@ const CONFIG_SAMPLE = {
   _comment_reserved_names: 'Block: > con, touch prn.txt (Windows reserved device names)',
   reserved_names: true,
 
-  _comment_python3: 'Auto-fix: python3 -> python (python3 is a Windows Store alias)',
-  python3: true,
+  _comment_python3: 'DISABLED: python3 -> python (已创建 python3.exe 符号链接)',
+  python3: false,
 
   _comment_dir_windows_flags: 'Auto-fix: dir /b -> ls -1, dir /s -> ls -R (dir in Git Bash is GNU coreutils)',
   dir_windows_flags: true,
